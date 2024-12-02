@@ -25,7 +25,7 @@ SECRET_KEY = "wgi$$14ymcwbleb3q%@@$vk(bnwfw0@6i2w3w#9q^bt8c^=32u"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['139-177-199-60.ip.linodeusercontent.com', 'localhost']
+ALLOWED_HOSTS = ['139-177-199-60.ip.linodeusercontent.com', 'localhost','139.177.199.60' ]
 
 
 # Application definition
