@@ -26,7 +26,9 @@ SECRET_KEY = "wgi$$14ymcwbleb3q%@@$vk(bnwfw0@6i2w3w#9q^bt8c^=32u"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['139-177-199-60.ip.linodeusercontent.com', 'localhost', '139.177.199.60', 'http://139.177.199.60' ]
+ALLOWED_HOSTS = ['139-177-199-60.ip.linodeusercontent.com', 
+                 'localhost', '139.177.199.60', 'http://139.177.199.60',
+                   '127.0.0.1']
 
 
 # Application definition
@@ -75,17 +77,23 @@ WSGI_APPLICATION = 'django_sample.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': 'django',
+#        'USER': 'django',
+#        'PASSWORD': 'tt6hMEAhCR4GvkgpCdFXD1X9AIN9Wi6TgzOj4OUxbOjmV',
+#        'HOST': 'localhost',
+#        'PORT': '',
+#    }
+#}
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django',
-        'USER': 'django',
-        'PASSWORD': 'tt6hMEAhCR4GvkgpCdFXD1X9AIN9Wi6TgzOj4OUxbOjmV',
-        'HOST': 'localhost',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
