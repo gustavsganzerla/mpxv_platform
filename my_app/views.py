@@ -21,7 +21,6 @@ def home(request):
 def db_home(request):
     form = GenomeQueryForm()
     results = Genome.objects.all()
-    print(results)
 
     if request.method == 'POST':
         form = GenomeQueryForm(request.POST)
@@ -88,7 +87,20 @@ def db_home(request):
 
                 queryset_data = []
                 queryset_data = list(results.values())
-                print(queryset_data)
+                
+                context = []
+
+                for item in queryset_data:
+                    context.append({
+                        'host':item['host'],
+                        'country':item['country'],
+                        'clade':item['clade'],
+                        'region':item['region'],
+                        'genome_id':item['genome_id'],
+                        'submission_date':str(item['submission_date'])
+                    })
+                
+                return render(request, 'my_app/view_db_query.html', {'context':context})
     
     else:
         form = GenomeQueryForm()
