@@ -1,0 +1,84 @@
+{% extends 'base.html'%}
+{% block content %}
+
+
+<style>
+
+.form-row {
+    display: flex;
+    align-items: left;
+    margin-bottom: 10px;
+}
+.form-row label {
+    width: 250px; 
+    margin-right: 1px; 
+}
+.form-row input[type="text"] {
+    width: 150px;
+}
+table {
+    
+    width: 100%;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+
+
+</style>
+
+<body>
+    <div class='content'>
+        <h1>Search our MPXV database</h1>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class='form-row'>
+                    <label for="{{form.host.id_for_label}}">Host:</label>
+                    {{form.host}}
+                </div>
+                <div class='form-row'>
+                    <label for="{{form.country.id_for_label}}">Country:</label>
+                    {{form.country}}
+                </div>
+
+		<div class='form-row'>
+			<label for="{{form.region.id_for_label}}">Region:</label>
+			{{form.region}}
+		</div>
+
+		<div class='form-row'>
+			<label for="{{form.genome_id.id_for_label}}">Genome ID:</label>
+			{{form.genome_id}}
+		</div>
+
+
+                <div class='form-row'>
+                    <label for="{{form.clade.id_for_label}}">Clade:</label>
+                    {{form.clade}}
+                </div>
+
+		<div class='form-row'>
+			<label for"{{form.start_date.id_for_label}}">Start Date</label>
+			{{form.start_date}}
+		</div>
+
+		<div class='form-row'>
+			<label for"{{form.end_date.id_for_label}}">End Date</label>
+			{{form.end_date}}
+		</div>
+
+
+                <button class='submit-button'>Submit</button>
+            </div>
+        </form>
+</body>
+
+{%endblock %}
