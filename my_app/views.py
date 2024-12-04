@@ -101,7 +101,7 @@ def db_home(request):
                         'genome_id':item['genome_id'],
                         'submission_date':str(item['submission_date'])
                     })
-                request.session['result_query'] = context 
+                
                 
                 return render(request, 'my_app/view_db_query.html', {'context':context,
                                                                      'query_len':len(context)})
