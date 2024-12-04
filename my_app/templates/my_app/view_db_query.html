@@ -25,8 +25,7 @@ th {
 
 
 	
-<!--<a href="{% url 'my_app:download_query_csv'%}"download>
-	<button class="download-button"> Download query table (.csv)</button> -->
+
 </a>
 	<table>
 		<thead>
@@ -43,7 +42,6 @@ th {
 		<tbody>
 			{% for item in context %}
 			<tr>
-				<!--<td>	<a href="{% url 'my_app:view_genome_db' genome_id=item.genome_id%}">{{item.genome_id}}</a></td> -->
 				<td>{{item.host}}</td>
 				<td>{{item.country}}</td>
 				<td>{{item.region}}</td>
