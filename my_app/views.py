@@ -19,6 +19,7 @@ def home(request):
 
 
 def db_home(request):
+
     form = GenomeQueryForm()
     results = Genome.objects.all()
 
@@ -107,3 +108,24 @@ def db_home(request):
         form = GenomeQueryForm()
 
     return render(request, 'my_app/db_home.html', context = {'form': form})
+
+def view_genome_db(request, genome_id):
+    genome_queryset = Genome.objects.filter(genome_id__contains=genome_id)
+
+    if genome_queryset is not None:
+        queryset_data = list(genome_queryset.values())
+        
+        context = []
+        for item in queryset_data:
+            context.append({
+                'genome_id': item['genome_id'],
+                'host':item['host'],
+                'country':item['country'],
+                'region':item['region'],
+                'clade':item['clade'],
+                'sequence': item['sequence']})
+
+            genome_len = len(item['sequence'])
+
+            return render(request, 'my_app/view_genome_db.html', context = {'context':context,
+                'genome_len':genome_len})

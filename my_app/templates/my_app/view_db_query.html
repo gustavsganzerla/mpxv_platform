@@ -42,7 +42,7 @@ th {
 		<tbody>
 			{% for item in context %}
 			<tr>
-                <td>{{item.genome_id}}</td>
+                <td>	<a href="{% url 'my_app:view_genome_db' genome_id=item.genome_id%}">{{item.genome_id}}</a></td>
 				<td>{{item.host}}</td>
 				<td>{{item.country}}</td>
 				<td>{{item.region}}</td>
