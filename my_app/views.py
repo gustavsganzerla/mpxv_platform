@@ -100,7 +100,8 @@ def db_home(request):
                         'submission_date':str(item['submission_date'])
                     })
                 
-                return render(request, 'my_app/view_db_query.html', {'context':context})
+                return render(request, 'my_app/view_db_query.html', {'context':context,
+                                                                     'query_len':len(context)})
     
     else:
         form = GenomeQueryForm()

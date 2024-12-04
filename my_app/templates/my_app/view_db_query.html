@@ -1,7 +1,57 @@
 {% extends 'base.html'%}
 
-{%block content%}
+{% block content %}
 
-{{context}}
+<style>
+table {
 
-{%endblock%}
+    width: 100%;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+</style>
+
+
+<div class='content'>
+	<h1>DB query results </h1>
+	<h2> A total of {{query_len}} results matched our DB</h2>
+
+
+	
+<!--<a href="{% url 'my_app:download_query_csv'%}"download>
+	<button class="download-button"> Download query table (.csv)</button> -->
+</a>
+	<table>
+		<thead>
+			<tr>
+				<th>Genome ID</th>
+				<th>Host</th>
+				<th>Country</th>
+				<th>Region</th>
+				<th>Clade</th>
+				<th>Submission date</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for item in context %}
+			<tr>
+				<!--<td>	<a href="{% url 'my_app:view_genome_db' genome_id=item.genome_id%}">{{item.genome_id}}</a></td> -->
+				<td>{{item.host}}</td>
+				<td>{{item.country}}</td>
+				<td>{{item.region}}</td>
+				<td>{{item.clade}}</td>
+				<td>{{item.submission_date}}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+{% endblock %}
