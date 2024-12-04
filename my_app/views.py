@@ -4,6 +4,7 @@ from . forms import GenomeQueryForm
 from django.db.models import Q, Func
 from . models import Genome
 from datetime import datetime
+import csv
 
 
 
@@ -129,3 +130,45 @@ def view_genome_db(request, genome_id):
 
             return render(request, 'my_app/view_genome_db.html', context = {'context':context,
                 'genome_len':genome_len})
+        
+def download_query_csv(request):
+    result_query= request.session.get('result_query', None)
+
+    if result_query:
+        csv_content = []
+        csv_content.append(['Genome ID',
+            'Host',
+            'Country',
+            'Region',
+            'Clade'])
+
+        for query in result_query:
+            csv_content.append([
+                query['genome_id'],
+                query['host'],
+                query['country'],
+                query['region'],
+                query['clade']
+            ])
+
+        if csv_content:
+            response = HttpResponse(content_type = "text/csv")
+            response['Content-Disposition'] = 'attachment; filename="query.csv"'
+            
+            csv_writer = csv.writer(response)
+
+            for row in csv_content:
+                csv_writer.writerow(row)
+            return response
+        
+def download_genome(request, genome_id):
+    genome_queryset = Genome.objects.filter(genome_id__contains=genome_id)
+
+    if genome_queryset:
+
+        response = HttpResponse(content_type = 'text/plain')
+        response['Content-Disposition'] = 'attachment; filename = "genome.fasta"'
+        queryset_data = list(genome_queryset.values())
+        for item in queryset_data:
+            response.write(f">{item['genome_id']}\n{item['sequence']}")
+        return response

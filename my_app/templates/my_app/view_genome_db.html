@@ -1,7 +1,63 @@
 {% extends 'base.html'%}
 
-{%block content%}
+{% block content %}
+    <style>
+        table {
+            width: 50%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+    <h1>Genome view </h1>
+    <br>
+    <table>
+	    <tbody>
+		    {% for item in context %}
+		    <tr>
+			    <td><b>Genome ID</b></td>
+			    <td>{{item.genome_id}}</td>
+		    </tr>
+		    <tr>
+			    <td><b>Host</b></td>
+			    <td>{{item.host}}</td>
+		    </tr>
+		    <tr>
+			    <td><b>Country</b></td>
+			    <td>{{item.country}}</td>
+		    </tr>
+		    <tr>
+			    <td><b>Region</b></td>
+			    <td>{{item.region}}</td>
+		    </tr>
+		    <tr>
+			    <td><b>Clade</b></td>
+			    <td>{{item.clade}}</td>
+		    </tr>
 
-{{genome_len}}
+		    <tr>
+			    <td><b>Genome length</b></td>
+			    <td>{{genome_len}}</td>
+		    </tr>
+		    <tr>
+			    <td><b>Download .fasta</b></td>
+			    
+			    <td><a href="{% url 'my_app:download_genome' genome_id=item.genome_id%}"download>
+	<button class="download-button"> Download</button>
+				    </a></td>
+		    </tr>
+		    {% endfor %}
+	    </tbody>
+    </table>
 
-{%endblock%}
+
+
+
+
+
+{% endblock %}

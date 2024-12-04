@@ -24,7 +24,9 @@ th {
 	<h2> A total of {{query_len}} results matched our DB</h2>
 
 
-	
+    <a href="{% url 'my_app:download_query_csv'%}"download>
+        <button class="download-button"> Download query table (.csv)</button>
+    </a>
 
 </a>
 	<table>
