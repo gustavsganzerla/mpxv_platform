@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from . forms import GenomeQueryForm
+from . forms import GenomeQueryForm, annotationForm
 from django.db.models import Q, Func
 from . models import Genome
 from datetime import datetime
@@ -18,7 +18,7 @@ class ConvertDate(Func):
 def home(request):
     return render(request, 'my_app/home.html')
 
-
+###database views
 def db_home(request):
 
     form = GenomeQueryForm()
@@ -163,6 +163,7 @@ def download_query_csv(request):
             return response
         
 def download_genome(request, genome_id):
+
     genome_queryset = Genome.objects.filter(genome_id__contains=genome_id)
 
     if genome_queryset:
@@ -173,3 +174,14 @@ def download_genome(request, genome_id):
         for item in queryset_data:
             response.write(f">{item['genome_id']}\n{item['sequence']}")
         return response
+    
+###annotation views
+#def annotation(request):
+#    form = annotationForm()
+
+#    if request.headers.get('x-requested-with') == 'XMLHttpRequest' and 'term' in request.GET:
+#        term = request.GET.get('term')
+
+#        qs = Reference.objects.filter(accession__contains=term)
+#        names = list(qs.values_list('accession', flat=True))
+#        return JsonResponse(names, safe=False)

@@ -14,3 +14,10 @@ class Genome(models.Model):
 
     def __str__(self):
         return f"{self.genome_id}, {self.clade}, {self.host}, {self.country}, {self.region}, {self.submission_date}, {self.length}"
+    
+class Reference(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    accession = models.CharField(max_length=200)
+
+    def __str__(self):
+        return f"{self.id}, {self.accession}"

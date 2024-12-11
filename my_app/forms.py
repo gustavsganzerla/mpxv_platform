@@ -19,3 +19,33 @@ class GenomeQueryForm(forms.Form):
             widget=forms.TextInput(attrs={'type':'date'}),
             label='End Date',
             required=False)
+
+
+class annotationForm(forms.Form):
+    uploaded_file = forms.FileField(
+        label = 'Upload the .FASTA file with your genome', required=True)
+
+    ###.sbt file
+    first_name = forms.CharField(required=True, max_length=100)
+    last_name = forms.CharField(required=True, max_length=100)
+    email = forms.EmailField(required=True, max_length=100)
+    organization = forms.CharField(required=True, max_length=100)
+    department = forms.CharField(required=True, max_length=100)
+    street = forms.CharField(required=True, max_length=100)
+    city = forms.CharField(required=True, max_length=100)
+    state = forms.CharField(required=True, max_length=100)
+    postal_code = forms.CharField(required=True, max_length=100)
+    country = forms.CharField(required=True, max_length=100)
+    author_first_name = forms.CharField(required=True, max_length=100)
+    author_last_name = forms.CharField(required=True, max_length=100)
+    reference_title = forms.CharField(required=True, max_length=100)
+
+    ###.csv file with metadata
+    strain = forms.CharField(required=True, max_length=50)
+    collection_country = forms.CharField(required=True, max_length=100)
+    collection_date = forms.CharField(required=True)
+    coverage = forms.CharField(required=True, max_length=50)
+
+
+    ###reference
+    reference = forms.CharField(required=True, max_length=200)
