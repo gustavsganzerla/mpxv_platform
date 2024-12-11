@@ -1,10 +1,11 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from . forms import GenomeQueryForm, annotationForm
 from django.db.models import Q, Func
-from . models import Genome
+from . models import Genome, Reference
 from datetime import datetime
 import csv
+import tempfile
 
 
 
@@ -176,12 +177,99 @@ def download_genome(request, genome_id):
         return response
     
 ###annotation views
-#def annotation(request):
-#    form = annotationForm()
+def annotation(request):
+    form = annotationForm()
 
-#    if request.headers.get('x-requested-with') == 'XMLHttpRequest' and 'term' in request.GET:
-#        term = request.GET.get('term')
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest' and 'term' in request.GET:
+        term = request.GET.get('term')
 
-#        qs = Reference.objects.filter(accession__contains=term)
-#        names = list(qs.values_list('accession', flat=True))
-#        return JsonResponse(names, safe=False)
+        qs = Reference.objects.filter(accession__contains=term)
+        names = list(qs.values_list('accession', flat=True))
+        return JsonResponse(names, safe=False)
+    
+    if request.method=='POST':
+        form = annotationForm(request.POST, request.FILES)
+        if form.is_valid():
+            collected_data = form.cleaned_data
+            uploaded_file = collected_data.get('uploaded_file')
+
+            ###in the annotation pipeline, i will need 3 files, all from user input
+            if uploaded_file:
+                uploaded_file_data = uploaded_file.read().decode('utf-8')
+                uploaded_file_io = StringIO(uploaded_file_data)
+
+                ###file 1: user fasta sequence
+                with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_seq_file:
+                    temp_seq_file_path = temp_seq_file.name
+
+                    for record in SeqIO.parse(uploaded_file_io, 'fasta'):
+                        temp_seq_file.write(f">{record.id}\n{record.seq}\n")
+                        temp_strain = record.id
+
+                ###file 2: the .sbt file with submission details.
+                first_name = collected_data.get('first_name')
+                last_name = collected_data.get('last_name')
+                email = collected_data.get('email')
+                organization = collected_data.get('organization')
+                department = collected_data.get('department')
+                street = collected_data.get('street')
+                city = collected_data.get('city')
+                state = collected_data.get('state')
+                postal_code = collected_data.get('postal_code')
+                country = collected_data.get('country')
+                author_first_name = collected_data.get('author_first_name')
+                author_last_name = collected_data.get('author_last_name')
+                reference_title = collected_data.get('reference_title')
+
+                with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_sbt_file:
+                    temp_sbt_file_path = temp_sbt_file.name
+
+                    temp_sbt_file.write(f'Submit-block ::= {{\n  contact {{\n    contact {{\n      name name {{\n')
+                    temp_sbt_file.write(f'        last "{last_name}",\n        first "{first_name}",\n')
+                    temp_sbt_file.write(f'        middle "",\n        initials "",\n        suffix "",\n        title ""\n      }},\n')
+                    temp_sbt_file.write(f'      affil std{{\n')
+                    temp_sbt_file.write(f'        affil "{organization}",\n        div "{department}",\n        city "{city}",\n        sub"{state}",\n')
+                    temp_sbt_file.write(f'        country "{country}",\n        email "{email}",\n        postal-code"{postal_code}"\n')
+                    temp_sbt_file.write(f'      }}\n    }}\n  }},\n')
+                    temp_sbt_file.write(f'  cit {{\n')
+                    temp_sbt_file.write(f'    authors {{\n')
+                    temp_sbt_file.write(f'      names std {{\n')
+                    temp_sbt_file.write(f'        {{\n')
+                    temp_sbt_file.write(f'          name name {{\n')
+                    temp_sbt_file.write(f'            last "{author_last_name}",\n')
+                    temp_sbt_file.write(f'            first "{author_first_name}",\n')
+                    temp_sbt_file.write(f'            middle "",\n            initials "",\n            suffix "",\n            title ""\n')
+                    temp_sbt_file.write(f'          }}\n        }}\n      }},\n')
+                    temp_sbt_file.write(f'      affil std {{\n')
+                    temp_sbt_file.write(f'        affil "{organization}",\n        div "{department}",\n        city "{city}",\n        sub"{state}",\n')
+                    temp_sbt_file.write(f'        country "{country}",\n        email "{email}",\n        postal-code"{postal_code}"\n')
+                    temp_sbt_file.write(f'      }}\n    }}\n  }},\n')
+                    temp_sbt_file.write(f'  subtype new\n}}\n')
+                    temp_sbt_file.write(f'Seqdesc ::= pub {{\n  pub {{\n    gen {{\n      cit "{reference_title}",\n')
+                    temp_sbt_file.write(f'      authors {{\n        names std {{\n          {{\n            name name {{\n')
+                    temp_sbt_file.write(f'              last "{author_last_name}",\n')
+                    temp_sbt_file.write(f'              first "{author_first_name}",\n')
+                    temp_sbt_file.write(f'              middle "",\n              initials "",\n              suffix "",\n              title ""\n            }}\n')
+                    temp_sbt_file.write(f'          }}\n        }}\n      }},\n')
+                    temp_sbt_file.write(f'      title "{reference_title}"\n    }}\n  }}\n}}\n')
+                    temp_sbt_file.write(f'Seqdesc ::= user {{\n  type str "Submission",\n  data {{\n    {{\n')
+                    temp_sbt_file.write(f'      label str "AdditionalComment",\n      data str "ALT EMAIL:{email}"\n    }}\n  }}\n}}\n')
+                    temp_sbt_file.write(f'Seqdesc ::= user {{\n  type str "Submission",\n  data {{\n    {{\n')
+                    temp_sbt_file.write(f'      label str "AdditionalComment",\n      data str "Submission Title:{reference_title}"\n    }}\n  }}\n}}\n')
+                    
+               ###file 3: the csv file containing the metadata
+                strain = temp_strain
+                collection_country = collected_data.get('collection_country')
+                collection_date = collected_data.get('collection_date')
+                coverage = collected_data.get('coverage')
+
+                with tempfile.NamedTemporaryFile(mode = 'w', delete=False) as temp_csv_file:
+                    temp_csv_file_path = temp_csv_file.name
+                    temp_csv_file.write(f'strain,collection-date,country,coverage\n')
+                    temp_csv_file.write(f'{strain},{collection_date},{collection_country},{coverage}')
+
+
+                ###now i should have the three files
+                ref = collected_data.get('reference')
+    
+    return render(request, 'my_app/annotation.html', context = {'form':form})

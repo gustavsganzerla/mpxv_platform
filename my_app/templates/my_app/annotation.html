@@ -1,0 +1,230 @@
+{% extends 'base.html'%}
+
+{%block content%}
+
+<style>
+
+
+    .form-container {
+        border: 2px solid #000;
+        padding: 20px;
+        width: 100%; /* Allow the form container to be as wide as needed */
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* Two columns of equal width */
+        gap: 20px; /* Space between rows and columns */
+        border-radius: 10px; /* Optional: for rounded corners */
+        box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+    }
+
+    .form-container h1 {
+        grid-column: span 3; /* Make the heading span across two columns */
+        text-align: center;
+    }
+
+    .form-container-file {
+        border: 2px solid #000;
+        padding: 20px;
+        width: 100%; /* Allow the form container to be as wide as needed */
+        display: grid;
+        grid-template-columns: repeat(1, 1fr); /* Two columns of equal width */
+        gap: 20px; 
+        border-radius: 10px; 
+        box-sizing: border-box; 
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .form-group label {
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .submit-button {
+        grid-column: span 2; /* Make the button span across two columns */
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .submit-button:hover {
+        background-color: #45a049;
+    }
+
+    .input-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .input-container input {
+        flex: 1;
+        margin-right: 10px; /* Space between input field and button */
+    }
+
+    .clear-button {
+        font-size: 12px; /* Smaller text size */
+        padding: 5px 10px; /* Adjust padding to make button smaller */
+        height: 25px; /* Smaller height */
+        width: auto; /* Adjust width based on content */
+        cursor: pointer; /* Show pointer cursor on hover */
+        /* Optional: Add border or background to style button */
+        border: 1px solid #ccc;
+        background-color: #f5f5f5;
+    }
+</style>
+
+
+
+
+<div class='content'>
+        <h1>Quickly annotate your Mpox genome</h1>
+
+        <form method='POST' enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class='form-container-file'>
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">Upload your genome:</label>
+                    {{ form.uploaded_file }}
+                </div>
+            </div>
+
+
+            <h2>Reference file for annotation </h2>
+            <div class='form-container'>
+
+                <div class="form-group">
+                    <label for="{{ form.reference.id_for_label }}">Reference:</label>
+                    <div class="input-container">
+                        {{ form.reference }}
+                        <button type="button" class="clear-button" onclick="clearAccession()">Clear</button>
+                    </div>
+                </div></div>
+
+            <h2> Information for GenBank-ready submission file (.sbt) </h2>
+            <div class="form-container">
+            
+            
+            <div class="form-group">
+                <label for="{{ form.first_name.id_for_label }}">First name:</label>
+                {{ form.first_name }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.last_name.id_for_label }}">Last name:</label>
+                {{ form.last_name }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email:</label>
+                {{ form.email }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Organization:</label>
+                {{ form.organization }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Department:</label>
+                {{ form.department }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Street:</label>
+                {{ form.street }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">City:</label>
+                {{ form.city }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">State/Province:</label>
+                {{ form.state }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Postal Code:</label>
+                {{ form.postal_code }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Country:</label>
+                {{ form.country }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Author First Name:</label>
+                {{ form.author_first_name }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Author Last Name:</label>
+                {{ form.author_last_name }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Reference Title:</label>
+                {{ form.reference_title }}
+            </div>
+        </div>
+        <h2>Metadata </h2>
+        <div class='form-container'>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Strain:</label>
+                {{ form.strain }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Collection Date (YYYYMMDD):</label>
+                {{ form.collection_date }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Country:</label>
+                {{ form.collection_country }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Coverage:</label>
+                {{ form.coverage }}
+            </div>
+        </div>
+<button class='submit-button'>Submit</button>
+            
+
+
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        $("#id_reference").autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: "{% url 'my_app:annotation' %}",
+                    dataType: "json",
+                    data: {
+                        term: request.term
+                    },
+                    success: function(data) {
+                        response(data);
+                    }
+                });
+            },
+            minLength: 2,
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    function clearAccession() {
+        document.getElementById('id_reference').value = '';
+    }
+</script>
+
+
+{% endblock%}
