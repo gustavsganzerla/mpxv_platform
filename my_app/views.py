@@ -9,6 +9,7 @@ import tempfile
 from Bio import SeqIO
 import os
 import subprocess
+from io import StringIO
 
 
 
