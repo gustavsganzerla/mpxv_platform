@@ -274,8 +274,7 @@ def annotation(request):
 
 
                 ###now i should have the three files
-                ref = collected_data.get('NC_003310.1')
-                print(ref)
+                ref = 'NC003310.1'
 
                 if os.path.exists(temp_csv_file_path) and os.path.exists(temp_sbt_file_path):
                     script_dir = '/var/www/django_app/external_software/vapid/VAPiD-master/'
