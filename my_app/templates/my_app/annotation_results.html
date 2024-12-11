@@ -1,0 +1,32 @@
+{% extends 'base.html'%}
+
+
+{%block content%}
+
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed; /* Ensures columns take up equal space */
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th, td {
+            width: 50%; /* Adjust this value to make columns larger horizontally */
+        }
+    </style>
+<h1>Genome annotation executed successfully!</h1>
+<h2>Genome annotation of {{strain}} using {{ref}} as reference. </h2>
+<h3>Download results </h3>
+
+
+
+	
+
+
+{%endblock%}

@@ -6,6 +6,9 @@ from . models import Genome, Reference
 from datetime import datetime
 import csv
 import tempfile
+from Bio import SeqIO
+import os
+import subprocess
 
 
 
@@ -271,5 +274,87 @@ def annotation(request):
 
                 ###now i should have the three files
                 ref = collected_data.get('reference')
+
+                if os.path.exists(temp_csv_file_path) and os.path.exists(temp_sbt_file_path):
+                    script_dir = '/var/www/django_app/external_software/vapid/VAPiD-master/'
+                    script_path = os.path.join(script_dir, 'vapid3.py')
+
+                    try:
+                        #start the process
+                        process = subprocess.Popen(
+                            [
+                                'python3',
+                                script_path,
+                                temp_seq_file_path,
+                                temp_sbt_file_path,
+                                '--metadata_loc', temp_csv_file_path,
+                                '--r', ref
+                            ],
+                            cwd=script_dir, 
+                            stdin=subprocess.PIPE, 
+                            stdout=subprocess.PIPE,  
+                            stderr=subprocess.PIPE, 
+                            text=True 
+                        )
+
+                        # Define the input that the script is expecting
+                        script_input = "input1\ninput2\n"
+
+                        # Send input to the script and read the output
+                        stdout, stderr = process.communicate(input=script_input)
+
+                        ###script output file
+                        request.session['stdout'] = stdout
+
+                        ###script error file
+                        request.session['stderr'] = stderr
+
+
+                        # Check if the process was successful
+                        if process.returncode == 0:
+                            created_dir = os.path.join(script_dir, strain)
+
+                            if os.path.exists(created_dir):
+                                ###remove temp files
+                                os.remove(temp_csv_file_path)
+                                os.remove(temp_seq_file_path)
+                                os.remove(temp_sbt_file_path)
+
+                                ###save the generated files
+                                ###tbl
+                                output_tbl = []
+                                with open(created_dir+'/'+strain+'.tbl', 'r') as f:
+                                    for line in f:
+                                        output_tbl.append(line)
+                                    request.session['output_tbl'] = output_tbl
+                                
+                                output_gbf = []
+                                with open(created_dir+'/'+strain+'.gbf', 'r') as f:
+                                    for line in f:
+                                        output_gbf.append(line)
+                                    request.session['output_gbf'] = output_gbf
+
+                                output_ali = []
+                                with open(created_dir+'/'+strain+'.ali', 'r') as f:
+                                    for line in f:
+                                        output_ali.append(line)
+                                    request.session['output_ali'] = output_ali
+
+
+                                return render(request, 'my_app/annotation_results.html', 
+                                        context={'strain':strain,'ref':ref})
+
+
+
+                    except subprocess.CalledProcessError as e:
+                        # Print error details
+                        print(f"An error has occurred: {e}")
+                        print("Script output:\n", e.stdout)
+                        print("Script errors:\n", e.stderr)
+
+                    
+
+
+
     
     return render(request, 'my_app/annotation.html', context = {'form':form})
